@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spectrum Tution Point — Website Revamp Pitch</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --ink: #101014;
+    --cream: #f2f1ec;
+    --paper: #ffffff;
+    --blue: #1d4ed8;
+    --navy: #1e3a8a;
+    --mute: #71717a;
+    --grad: linear-gradient(90deg, #35c99b, #2e7cf6);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0a0a0f; font-family: Inter, system-ui, sans-serif; overflow: hidden; }
+  .stage { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .slide-inner { width: 1280px; height: 720px; flex: none; transform-origin: center center; position: relative; background: var(--cream); color: var(--ink); overflow: hidden; }
+  .slide-inner.dark { background: var(--ink); color: #fff; }
+  .slide-inner .pad { position: absolute; inset: 0; padding: 56px 64px; display: flex; flex-direction: column; }
+
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 800; letter-spacing: 0.28em; text-transform: uppercase; color: var(--navy); }
+  .dark .kicker { color: #93c5fd; }
+  .kicker::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--grad); }
+  h1 { font-family: Anton, Impact, sans-serif; font-weight: 400; text-transform: uppercase; line-height: 0.98; letter-spacing: 0.01em; }
+  h1 .grad, .grad { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .blue { color: var(--blue); }
+  .lede { color: var(--mute); font-size: 16px; line-height: 1.55; }
+  .dark .lede { color: rgba(255,255,255,0.6); }
+
+  .shot { border-radius: 18px; border: 5px solid #fff; box-shadow: 0 24px 60px -18px rgba(16,16,20,0.35); object-fit: cover; }
+  .dark .shot { border-color: rgba(255,255,255,0.08); box-shadow: 0 24px 60px -18px rgba(0,0,0,0.7); }
+  .tag { position: absolute; top: -14px; left: 22px; background: var(--ink); color: #fff; font-size: 11px; font-weight: 800; letter-spacing: 0.18em; padding: 7px 14px; border-radius: 999px; text-transform: uppercase; }
+  .tag.bad { background: #b91c1c; }
+  .tag.good { background: var(--blue); }
+
+  ul.points { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  ul.points li { position: relative; padding-left: 30px; font-size: 16.5px; line-height: 1.45; font-weight: 600; }
+  ul.points li::before { content: ''; position: absolute; left: 0; top: 6px; width: 14px; height: 14px; border-radius: 50%; background: var(--grad); }
+  ul.points li span.sub { display: block; font-weight: 500; color: var(--mute); font-size: 13.5px; margin-top: 2px; }
+  .dark ul.points li span.sub { color: rgba(255,255,255,0.5); }
+
+  .frame { position: relative; }
+
+  table.cmp { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+  table.cmp th { text-align: left; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; padding: 8px 14px; color: var(--mute); border-bottom: 2px solid rgba(16,16,20,0.15); }
+  table.cmp td { padding: 9px 14px; border-bottom: 1px solid rgba(16,16,20,0.08); vertical-align: top; }
+  table.cmp td:first-child { font-weight: 800; white-space: nowrap; }
+  table.cmp td.old { color: #b91c1c; font-weight: 500; }
+  table.cmp td.new { color: #047857; font-weight: 600; }
+
+  .price-big { font-family: Anton, Impact, sans-serif; font-size: 150px; line-height: 1; color: var(--blue); }
+  .chip { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid rgba(16,16,20,0.1); border-radius: 999px; padding: 10px 18px; font-weight: 700; font-size: 15px; box-shadow: 0 8px 24px -10px rgba(16,16,20,0.25); }
+  .step { display: flex; gap: 18px; align-items: flex-start; }
+  .step .num { font-family: Anton, Impact, sans-serif; font-size: 44px; color: var(--blue); line-height: 1; }
+
+  .notes { display: none; position: absolute; left: 64px; right: 64px; bottom: 40px; background: rgba(29,78,216,0.08); border-left: 4px solid var(--blue); padding: 12px 16px; font-size: 13px; color: var(--navy); border-radius: 0 10px 10px 0; }
+  .dark .notes { color: #bfdbfe; background: rgba(59,130,246,0.12); }
+  body.show-notes .notes { display: block; }
+
+  .hud { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; align-items: center; gap: 16px; padding: 10px 18px; color: #9ca3af; font-size: 12px; background: linear-gradient(transparent, rgba(0,0,0,0.55)); }
+  .hud .bar { flex: 1; height: 3px; background: rgba(255,255,255,0.15); border-radius: 99px; overflow: hidden; }
+  .hud .bar i { display: block; height: 100%; background: var(--grad); width: 0%; transition: width 0.25s; }
+  .hud kbd { background: rgba(255,255,255,0.12); border-radius: 5px; padding: 2px 7px; font-family: inherit; }
+
+  @media print {
+    body { overflow: visible; background: #fff; }
+    .stage { position: static; display: block; }
+    .slide-inner { transform: none !important; margin: 0 auto; page-break-after: always; }
+    .hud { display: none; }
+    .notes { display: block; }
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+
+  <!-- ── SLIDE 1 · TITLE ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">Website Revamp Proposal · 2026</span>
+      <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:44px;flex:1;align-items:center;margin-top:18px">
+        <div>
+          <h1 style="font-size:74px">A website worthy of <span class="grad">35 years</span> of excellence</h1>
+          <p class="lede" style="margin-top:22px;max-width:460px">Spectrum Tution Point, Vellore — rebuilt as a modern, animated, admissions-driving experience for Classes 6–10.</p>
+          <div style="display:flex;gap:10px;margin-top:26px;flex-wrap:wrap">
+            <span class="chip">CBSE · ICSE · State Board</span>
+            <span class="chip">Classes 6–10</span>
+          </div>
+        </div>
+        <div class="frame">
+          <img class="shot" src="screenshots/new-1-hero.png" alt="New website hero" style="width:100%;height:430px" />
+          <span class="tag good">The new experience</span>
+        </div>
+      </div>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Open with the promise, not the tech — "You've spent 35 years building Spectrum's reputation; this proposal is about making the website finally show it." Let the hero screenshot do the talking. 30 seconds max on this slide.</aside>
+  </section>
+
+  <!-- ── SLIDE 2 · PROBLEM ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">The Problem</span>
+      <h1 style="font-size:52px;margin-top:10px">Your current website is <span style="color:#b91c1c">invisible</span></h1>
+      <div style="display:grid;grid-template-columns:1.05fr 1fr;gap:44px;flex:1;align-items:center">
+        <div class="frame">
+          <img class="shot" src="screenshots/old-1-hero.png" alt="Current website hero" style="width:100%;height:420px" />
+          <span class="tag bad">Current site — live today</span>
+        </div>
+        <ul class="points">
+          <li>Looks like a generic template — the same as every competitor
+            <span class="sub">Parents can't tell Spectrum apart from a coaching centre that started last year.</span></li>
+          <li>The headline itself fails to render — "Board-Specific ."
+            <span class="sub">The most important sentence on the page is broken.</span></li>
+          <li>Zero motion — the page feels abandoned
+            <span class="sub">A static page reads as "this business isn't active" to a first-time parent.</span></li>
+          <li>Nothing guides a visitor toward admissions</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Be factual, not insulting — point at the screenshot, name what you see: small headline, broken text, no life. The goal is "the current site undersells Spectrum," not "whoever made this was bad." Pause after the broken-headline point; let them react.</aside>
+  </section>
+
+  <!-- ── SLIDE 3 · COST OF INACTION ── -->
+  <section class="slide-inner dark">
+    <div class="pad">
+      <span class="kicker">Cost of Doing Nothing</span>
+      <h1 style="font-size:52px;margin-top:10px">Every silent visit is a <span class="grad">lost admission</span></h1>
+      <div style="display:grid;grid-template-columns:1fr 1.05fr;gap:44px;flex:1;align-items:center">
+        <ul class="points">
+          <li>The entire call-to-action is a paragraph of text
+            <span class="sub">No form, no countdown, no phone button — interest evaporates.</span></li>
+          <li>Parents shortlist 3–4 centres online before visiting any
+            <span class="sub">The centre that looks alive and modern wins the walk-in.</span></li>
+          <li>A hoarding costs ₹20,000+ a month — and expires
+            <span class="sub">A website works 24/7 for every future admission season, at ₹0/month.</span></li>
+          <li>Every admission is worth years of fees — the site pays for itself with one enrolment</li>
+        </ul>
+        <div class="frame">
+          <img class="shot" src="screenshots/old-3-cta.png" alt="Current call-to-action" style="width:100%;height:420px" />
+          <span class="tag bad">The current "call to action"</span>
+        </div>
+      </div>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Anchor on the comparison they already understand: print ads and hoardings. "You already spend on visibility that expires. This is the one marketing asset that never expires." The empty-space screenshot is the punchline — don't rush past it.</aside>
+  </section>
+
+  <!-- ── SLIDE 4 · SOLUTION ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">The New Experience</span>
+      <h1 style="font-size:48px;margin-top:10px">First impressions now <span class="blue">do justice</span> to Spectrum</h1>
+      <div class="frame" style="margin-top:18px;flex:1">
+        <img class="shot" src="screenshots/new-1-hero.png" alt="New hero" style="width:100%;height:440px" />
+        <span class="tag good">New hero — animated</span>
+        <div style="position:absolute;bottom:18px;left:22px;display:flex;gap:10px">
+          <span class="chip">Floating subject pills</span>
+          <span class="chip">Live 98.2% stat card</span>
+          <span class="chip">Student energy, brand colors</span>
+        </div>
+      </div>
+      <p class="lede" style="margin-top:16px">Everything moves, pops and guides — it feels like a national brand, not a local flyer.</p>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> One breath: "This is the same information parents already need — presented the way their eyes want to receive it." Don't list features; describe the feeling. If presenting live, open the actual site and scroll the hero for them.</aside>
+  </section>
+
+  <!-- ── SLIDE 5 · OLD VS NEW ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">Side by Side</span>
+      <h1 style="font-size:46px;margin-top:10px">Old vs new — <span class="grad">the difference is the details</span></h1>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;margin-top:16px">
+        <div class="frame"><img class="shot" src="screenshots/old-2-why.png" alt="Old why section" style="width:100%;height:150px" /><span class="tag bad" style="font-size:9px;padding:5px 10px">Old: "Why Spectrum"</span></div>
+        <div class="frame"><img class="shot" src="screenshots/new-3-subjects.png" alt="New subjects" style="width:100%;height:150px" /><span class="tag good" style="font-size:9px;padding:5px 10px">New: interactive subjects</span></div>
+      </div>
+      <table class="cmp" style="margin-top:26px">
+        <tr><th></th><th>Current website</th><th>New website</th></tr>
+        <tr><td>Design</td><td class="old">Generic template, dated</td><td class="new">Custom, editorial, brand-first</td></tr>
+        <tr><td>Motion</td><td class="old">None — static page</td><td class="new">30+ animations, marquees, live counters</td></tr>
+        <tr><td>Results &amp; faculty</td><td class="old">Plain text lists</td><td class="new">Photo carousels with scores &amp; credentials</td></tr>
+        <tr><td>Admissions</td><td class="old">One paragraph of text</td><td class="new">Countdown + demo-class form + instant confirmation</td></tr>
+        <tr><td>Editing</td><td class="old">Developer needed per change</td><td class="new">All content editable from one file</td></tr>
+        <tr><td>Running cost</td><td class="old">Current hosting bills</td><td class="new">₹0/month hosting</td></tr>
+      </table>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Don't read the table row by row — pick two rows that stung on slides 2–3 (motion, admissions) and let them scan the rest. The screenshots above the table carry the slide.</aside>
+  </section>
+
+  <!-- ── SLIDE 6 · BUILT TO CONVERT ── -->
+  <section class="slide-inner dark">
+    <div class="pad">
+      <span class="kicker">Admissions Funnel</span>
+      <h1 style="font-size:48px;margin-top:10px">Every scroll moves a parent closer to <span class="grad">"Book a Demo"</span></h1>
+      <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:44px;flex:1;align-items:center">
+        <div class="frame">
+          <img class="shot" src="screenshots/new-6-admissions.png" alt="Admissions section" style="width:100%;height:430px" />
+          <span class="tag good">Live admissions section</span>
+        </div>
+        <ul class="points">
+          <li>Live countdown to the admissions deadline
+            <span class="sub">Urgency that text alone can't create.</span></li>
+          <li>Demo-class form with instant confirmation
+            <span class="sub">A parent's interest is captured the moment it happens — not lost to "call us later."</span></li>
+          <li>Phone &amp; WhatsApp one tap away, on every screen</li>
+          <li>Designed mobile-first — where parents actually browse</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Frame as a machine: "Interest → urgency → action → confirmation. The old page stops at interest." If asked about the form backend: the form is front-end demo-ready now; connecting submissions to email/WhatsApp is a small add-on you can quote separately.</aside>
+  </section>
+
+  <!-- ── SLIDE 7 · TRUST ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">Trust on Display</span>
+      <h1 style="font-size:48px;margin-top:10px">Results and mentors, <span class="blue">front and center</span></h1>
+      <div style="display:grid;grid-template-columns:1.15fr 1fr;gap:44px;flex:1;align-items:center">
+        <div class="frame">
+          <img class="shot" src="screenshots/new-5-results.png" alt="Results carousels" style="width:100%;height:430px" />
+          <span class="tag good">Topper carousels — auto-scrolling</span>
+        </div>
+        <ul class="points">
+          <li>Toppers scroll by with photos and scores
+            <span class="sub">Proof beats claims — parents see faces, not numbers in a list.</span></li>
+          <li>Faculty marquee with portraits &amp; credentials</li>
+          <li>Parent reviews in an infinite wall</li>
+          <li>98.6% distinction story woven through the page</li>
+        </ul>
+      </div>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> This is Spectrum's 35-year moat made visible. One line: "The reputation already exists — the new site finally displays it." Mention that real topper/faculty photos drop straight in later.</aside>
+  </section>
+
+  <!-- ── SLIDE 8 · WHAT'S INCLUDED ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">Scope</span>
+      <h1 style="font-size:50px;margin-top:10px">Everything is included — <span class="grad">one package</span></h1>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px 40px;margin-top:30px;flex:1;align-content:center">
+        <ul class="points">
+          <li>14-section complete website</li>
+          <li>Full custom motion design — hero, carousels, counters</li>
+          <li>Mobile, tablet &amp; desktop</li>
+          <li>Your logo &amp; brand colors throughout</li>
+        </ul>
+        <ul class="points">
+          <li>All current content, reorganized &amp; rewritten</li>
+          <li>Demo-class enquiry form + admissions countdown</li>
+          <li>Hosting setup done for you — ₹0/month</li>
+          <li>Handover docs + 15-minute walkthrough</li>
+        </ul>
+      </div>
+      <p class="lede">Domain (~₹900/year, paid to the registrar) and future photo/content swaps are the only things outside this package.</p>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> The honesty line at the bottom is deliberate — naming what's excluded now prevents the "oh, I thought that was included" conversation later. It also quietly scopes the ₹15K.</aside>
+  </section>
+
+  <!-- ── SLIDE 9 · PRICING ── -->
+  <section class="slide-inner dark">
+    <div class="pad" style="align-items:center;text-align:center;justify-content:center">
+      <span class="kicker" style="justify-content:center">Investment</span>
+      <h1 style="font-size:54px;margin-top:14px">One-time investment. <span class="grad">Zero monthly cost.</span></h1>
+      <div style="margin-top:26px;display:flex;align-items:baseline;justify-content:center;gap:14px">
+        <span style="color:rgba(255,255,255,0.5);font-size:24px;font-weight:700">₹</span>
+        <span class="price-big">15,000</span>
+        <span style="color:rgba(255,255,255,0.5);font-size:24px;font-weight:700">one-time</span>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:center;margin-top:30px;flex-wrap:wrap">
+        <span class="chip">₹0 / month hosting — forever</span>
+        <span class="chip">Only ~₹900/yr domain</span>
+        <span class="chip">100% yours — full ownership</span>
+      </div>
+      <p class="lede" style="margin-top:26px;max-width:640px;margin-left:auto;margin-right:auto">Compare: a single hoarding costs more per month and expires. This works every admission season, for years, for the price of one hoarding.</p>
+      <p style="margin-top:18px;font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.35)">Launch pricing for Spectrum · Payment: 50% to begin, 50% at go-live</p>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Say the number once, then stop talking. If there's silence, let it sit — the next person to speak makes the concession. The 50/50 payment line answers the budget question before it's asked.</aside>
+  </section>
+
+  <!-- ── SLIDE 10 · NEXT STEPS ── -->
+  <section class="slide-inner">
+    <div class="pad">
+      <span class="kicker">Next Steps</span>
+      <h1 style="font-size:50px;margin-top:10px">Live within <span class="blue">days</span>, not months</h1>
+      <div style="display:flex;flex-direction:column;gap:26px;margin-top:36px;flex:1;justify-content:center">
+        <div class="step"><span class="num">1</span><div><strong style="font-size:19px">Approve &amp; share final content</strong><p class="lede" style="margin-top:4px">Real topper/faculty photos, current fees, contact numbers.</p></div></div>
+        <div class="step"><span class="num">2</span><div><strong style="font-size:19px">We deploy &amp; connect your domain</strong><p class="lede" style="margin-top:4px">Hosting, SSL, and pyramidspectrum.in pointed to the new site.</p></div></div>
+        <div class="step"><span class="num">3</span><div><strong style="font-size:19px">Go live + 15-minute handover walkthrough</strong><p class="lede" style="margin-top:4px">You see exactly how to update anything, anytime.</p></div></div>
+      </div>
+      <p style="font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;color:var(--navy)">35 years of teaching excellence — now with a website that shows it.</p>
+    </div>
+    <aside class="notes"><strong>Speaker notes:</strong> Close on the emotion, then logistics. Hand them a one-page summary and ask directly: "Shall we start with the photos and fees?" An actual question — not "let me know if you're interested."</aside>
+  </section>
+
+</div>
+
+<div class="hud">
+  <span id="counter">1 / 10</span>
+  <div class="bar"><i id="bar"></i></div>
+  <span><kbd>←</kbd> <kbd>→</kbd> navigate · <kbd>N</kbd> notes · <kbd>Ctrl</kbd>+<kbd>P</kbd> export PDF</span>
+</div>
+
+<script>
+  const slides = [...document.querySelectorAll('.slide-inner')];
+  const counter = document.getElementById('counter');
+  const bar = document.getElementById('bar');
+  let i = 0;
+  function show(n) {
+    i = Math.max(0, Math.min(slides.length - 1, n));
+    slides.forEach((s, idx) => { s.style.display = idx === i ? 'block' : 'none'; });
+    counter.textContent = (i + 1) + ' / ' + slides.length;
+    bar.style.width = ((i + 1) / slides.length * 100) + '%';
+  }
+  function fit() {
+    const s = Math.min(window.innerWidth / 1280, window.innerHeight / 720) * 0.97;
+    slides.forEach(el => { el.style.transform = 'scale(' + s + ')'; });
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); show(i + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); show(i - 1); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(slides.length - 1);
+    if (e.key.toLowerCase() === 'n') document.body.classList.toggle('show-notes');
+  });
+  document.getElementById('stage').addEventListener('click', () => show(i + 1));
+  window.addEventListener('resize', fit);
+  fit(); show(0);
+</script>
+</body>
+</html>
